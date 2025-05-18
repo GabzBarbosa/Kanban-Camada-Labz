@@ -1,176 +1,202 @@
-:root {
-    --primary-color: rgb(251, 255, 11);
-}
-
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;1,700&display=swap');
 
 * {
     margin: 0;
     padding: 0;
-    font-family: "Poppins", serif;
-    outline: none;
     box-sizing: border-box;
+    font-style: normal;
+    outline: none;
+    font-family: "Montserrat", sans-serif;
 }
 
 body {
-    background-color: #DDD;
-}
-
-.header {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
     align-items: center;
-    background-color: rgb(6, 1, 10);
-    padding: 30px;
-    color: #FFF;
-
+    background-color: rgb(240, 235, 243);
+    padding: 20px;
+    text-align: center;
 }
 
-button.primary {
-    border: none;
-    background-color: var(--primary-color);
-    color: #050101;
+header {
     font-size: 16px;
-    padding: 9px 22px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-
-}
-
-.container {
+    background-color: #311354;
+    color: rgb(255, 255, 255);
     display: flex;
-    gap: 30px;
-    justify-content: center;
     align-items: center;
-    padding: 50px;
-}
-
-.container .column {
-    width: 250px;
-    height: 600px;
-    background-color: #ffffff;
-    border-radius: 18px;
-    overflow: hidden;
-    
-}
-.container .column .head {
-     background-color: var(--primary-color);
-     color: #050101;
-     padding: 12px;
-     text-align: center;
-     
-}
-
-.container .column .body {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 20px;
-
-}
-
-
-.container .column .body .card {
-    background-color: #EEE;
-    border-radius: 7px;
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.container .column .body .card .info {
-    font-size: 14px;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-}
-
-#modal {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right:0;
-    background-color: rgba(0,0,0, 0.5);
-    display: none;
-    justify-content: center;
-    align-items: center;
-}
-
-#modal .box {
-    background-color: #FFF;
-    width: 400px;
-    border-radius: 7px;
-    overflow: hidden;
-
-}
-
-#modal .box .head {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px 20px;
-    border-bottom: 1px solid #DDD;
-}
-
-#modal .box .head span {
-    font-size:18px;
-    font-weight: 700;
-    color: #333;
-}
-
-#modal .box .head button {
-    border: none;
-    background: none;
-    font-size: 22px;
-    font-weight: 700;
-    cursor: pointer;
-    color: #333;
-}
-
-#modal .box .form {
-    padding: 20px;
-}
-
-#modal .box .form .form-group {
-    margin-bottom: 15px
-}
-
-#modal .box .form label {
-    display: block;
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 5px;
-    
-}
-
-#modal .box .form textarea,
-#modal .box .form select,
-#modal .box .form input {
+    border-radius: 10px;
     width: 100%;
-    border-radius: 7px;
-    font-size: 14px;
-    border: 1px solid #999;
-    color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-#modal .box .form textarea {
-    padding: 10px 15px;
+
+header img {
+    margin-right: 10px;
+    border-radius: 50%;
     
 }
 
-#modal .box .form select {
-    padding: 10px;
-    
+
+.kanban-board {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
 }
 
-#modal .box .form input {
-    padding: 10px;
-    
+.kanban-column {
+  flex: 1;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  padding: 10px;
 }
 
-#modal .box .form button {
-    display: block;
-    margin-left: auto;    
+.kanban-column h3 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.kanban-cards {
+  min-height: 200px;
+  padding: 5px;
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+.kanban-card {
+  background-color: #f2f2f2;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: grab;
+}
+
+.kanban-card[data-priority="alta"] {
+  border-left: 6px solid red;
+}
+
+.kanban-card[data-priority="media"] {
+  border-left: 6px solid orange;
+}
+
+.kanban-card[data-priority="baixa"] {
+  border-left: 6px solid green;
+}
+
+.dragging {
+  opacity: 0.5;
+}
+
+.cards-hover {
+  background-color: #ffe8d3;
+}
+
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 20%;
+  left: 35%;
+  width: 300px;
+  background: #fff;
+  border: 1px solid #333;
+  padding: 20px;
+  z-index: 1000;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal input,
+.modal select,
+.modal button {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.close-btn {
+  cursor: pointer;
+  font-size: 20px;
+  text-align: right;
+  display: block;
+  margin-left: auto;
+}
+
+.kanban-card {
+  position: relative;
+  padding-right: 60px;
+}
+
+.card-actions {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  gap: 5px;
+}
+
+.card-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.card-actions button:hover {
+  color: #d11a2a;
+}
+.kanban-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.kanban-card[data-priority="alta"] {
+  border-left: 6px solid red;
+}
+.kanban-card[data-priority="media"] {
+  border-left: 6px solid orange;
+}
+.kanban-card[data-priority="baixa"] {
+  border-left: 6px solid green;
+}
+
+.kanban-card[data-expired="true"] {
+  background-color: #ffe5e5;
+  border-color: red;
+}
+
+.kanban-card.concluida {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        font-size: 16px;
+        padding: 1rem;
+    }
+
+    header img {
+        margin-bottom: 10px;
+        width: 60px;
+        height: 60px;
+    }
+
+    h2, h3, h4, a {
+        font-size: 18px;
+    }
+
+    input {
+        width: auto;
+    }
+
+    button {
+        width: auto;
+    }
 }

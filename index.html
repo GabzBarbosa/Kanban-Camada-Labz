@@ -1,92 +1,61 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gengabz - Kanban</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./style.css">
-
+  <meta charset="UTF-8">
+  <title>Kanban</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-     <div class="header">
-        <h1>Gengabz - Kanban</h1>
-        <button class="primary" onclick="openModal()">Nova Tarefa</button>
-     </div>
+      <header>
+        <img src="./imagem/Camada.png" alt="Logo do site" width="100" height="100">
+        <h1>Kanban - Camada Labz</h1>
+    </header>
 
-     <div class="container">
-        <div class="column" id="todoColumn">
-            <div class="head">
-                <span>A Fazer</span>
-            </div>
-            <div class="body">
+  <!-- Modal -->
+  <div id="taskModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2>Nova Tarefa</h2>
+      <input type="text" id="taskTitle" placeholder="Título da Tarefa">
 
-            </div>
-        </div>
-        <div class="column">
-            <div class="head">
-                <span>Em progresso</span>
-            </div>
-            <div class="body">
-                
-            </div>
-        </div>
-        <div class="column">
-            <div class="head">
-                <span>Finalizado</span>
-            </div>
-            <div class="body">
-                
-            </div>
-        </div>
-        <div class="column">
-            <div class="head">
-                <span>Arquivado</span>
-            </div>
-            <div class="body">
-                
-            </div>
-        </div>
-     </div>
+      <select id="taskPriority">
+        <option value="baixa">Baixa Prioridade</option>
+        <option value="media">Média Prioridade</option>
+        <option value="alta">Alta Prioridade</option>
+      </select>
+      <select id="taskStatus">
+        <option value="pendente">Pendente</option>
+        <option value="em-andamento">Em Andamento</option>
+        <option value="concluido">Concluído</option>
+        <option value="arquivado">Arquivado</option>
+      </select>
+      <button id="addTaskBtn">Adicionar</button>
+    </div>
+  </div>
 
-     <div id="modal">
-        <div class="box">
-            <div class="head">
-                <span id="createModeTitle">Nova Tarefa</span>
-                <span id="editeModeTitle">Editar Tarefa</span>
+  <!-- Botão para abrir o modal -->
+  <button id="openModalBtn">+ Nova Tarefa</button>
 
-                <button onclick="closeModal()">X</button>
-            </div>
+  <!-- Kanban Board -->
+  <div class="kanban-board">
+    <div class="kanban-column">
+      <h3>Pendente</h3>
+      <div class="kanban-cards" data-status="pendente"></div>
+    </div>
+    <div class="kanban-column">
+      <h3>Em Andamento</h3>
+      <div class="kanban-cards" data-status="em-andamento"></div>
+    </div>
+    <div class="kanban-column">
+      <h3>Concluído</h3>
+      <div class="kanban-cards" data-status="concluido"></div>
+    </div>
+    <div class="kanban-column">
+      <h3>Arquivado</h3>
+      <div class="kanban-cards" data-status="arquivado"></div>
+    </div>
+  </div>
 
-            <div class="form">
-                <input type="hidden" id="idInput">
-                <div class="form-group">
-                    <label for="description">Descrição</label>
-                    <textarea id="description" rows="3"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="priority">Prioridade</label>
-                    <select id="priority">
-                        <option>Baixa</option>
-                        <option>Media</option>
-                        <option>Alta</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="deadLine">Prazo</label>
-                    <input type="date" id="deadLine">
-                </div>
-
-                <button class="primary" onclick="createTask()" id="createModeBtn">Cadastrar</button>
-                <button class="primary" onclick="updateTask()" id="editeModeBtn">Salvar Alterações</button>
-            </div>
-        </div>
-     </div>
-
-
-     <script src="./script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
