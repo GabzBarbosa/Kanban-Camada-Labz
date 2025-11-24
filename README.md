@@ -1,4 +1,4 @@
-# primeiroprojeto2.0
+# versão atualizada do meu primeiro projeto
 Gerenciador de tarefas - Kanban
 essa é uma melhoria do meu primeiro projeto de gerenciador de tarefas
 
