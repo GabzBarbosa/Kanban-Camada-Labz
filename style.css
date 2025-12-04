@@ -9,6 +9,8 @@
     font-family: "Montserrat", sans-serif;
 }
 
+/* -------------------- Base -------------------- */
+
 body {
     align-items: center;
     background-color: rgb(240, 235, 243);
@@ -16,163 +18,188 @@ body {
     text-align: center;
 }
 
+/* -------------------- Header -------------------- */
+
 header {
     font-size: 16px;
     background-color: #311354;
-    color: rgb(255, 255, 255);
+    color: #fff;
     display: flex;
     align-items: center;
-    border-radius: 10px;
+    padding: 10px 20px;
+    border-radius: 12px;
     width: 100%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    justify-content: center;
+    gap: 12px;
 }
-
 
 header img {
     margin-right: 10px;
     border-radius: 50%;
-    
 }
 
+/* -------------------- Kanban Board (Miro-like) -------------------- */
 
 .kanban-board {
-  display: flex;
-  gap: 15px;
-  margin-top: 20px;
+    display: flex;
+    gap: 25px;                   /* + mais espaçamento entre colunas */
+    margin-top: 25px;
+    padding: 10px;
+    justify-content: center;
 }
 
 .kanban-column {
-  flex: 1;
-  background-color: #e0e0e0;
-  border-radius: 5px;
-  padding: 10px;
+    flex: 1;
+    min-width: 250px;
+    background-color: #f8f7fa;   /* fundo mais suave */
+    border-radius: 14px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* sombra estilo Miro */
+    transition: 0.2s ease-in-out;
+}
+
+.kanban-column:hover {
+    transform: translateY(-3px);
 }
 
 .kanban-column h3 {
-  text-align: center;
-  margin-bottom: 10px;
+    text-align: center;
+    margin-bottom: 12px;
+    font-size: 18px;
 }
 
+/* Cards container */
 .kanban-cards {
-  min-height: 200px;
-  padding: 5px;
-  background-color: #fff;
-  border-radius: 5px;
+    min-height: 250px;
+    padding: 8px;
+    background-color: #fff;
+    border-radius: 12px;
 }
 
+/* Card */
 .kanban-card {
-  background-color: #f2f2f2;
-  margin: 5px 0;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: grab;
+    background-color: #f2f2f2;
+    margin: 10px 0;
+    padding: 12px 14px;
+    border-radius: 10px;
+    cursor: grab;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    transition: transform 0.15s;
 }
 
+.kanban-card:hover {
+    transform: scale(1.02);
+}
+
+/* Prioridades */
 .kanban-card[data-priority="alta"] {
-  border-left: 6px solid red;
+    border-left: 6px solid #d93737;
 }
 
 .kanban-card[data-priority="media"] {
-  border-left: 6px solid orange;
+    border-left: 6px solid #e57f21;
 }
 
 .kanban-card[data-priority="baixa"] {
-  border-left: 6px solid green;
+    border-left: 6px solid #2e8b57;
 }
 
 .dragging {
-  opacity: 0.5;
+    opacity: 0.5;
 }
 
 .cards-hover {
-  background-color: #ffe8d3;
+    background-color: #ffe8d3;
 }
 
+/* -------------------- Modal -------------------- */
 
-/* Modal */
 .modal {
-  display: none;
-  position: fixed;
-  top: 20%;
-  left: 35%;
-  width: 300px;
-  background: #fff;
-  border: 1px solid #333;
-  padding: 20px;
-  z-index: 1000;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    display: none;
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 340px;
+    background: #fff;
+    border: 1px solid #aaa;
+    padding: 22px;
+    z-index: 1000;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 }
 
 .modal-content {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .modal input,
 .modal select,
 .modal button {
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+    font-size: 14px;
 }
 
 .close-btn {
-  cursor: pointer;
-  font-size: 20px;
-  text-align: right;
-  display: block;
-  margin-left: auto;
+    cursor: pointer;
+    font-size: 22px;
+    text-align: right;
+    display: block;
+    margin-left: auto;
 }
 
+/* Ações do card */
 .kanban-card {
-  position: relative;
-  padding-right: 60px;
+    position: relative;
+    padding-right: 60px;
 }
 
 .card-actions {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  display: flex;
-  gap: 5px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    display: flex;
+    gap: 5px;
 }
 
 .card-actions button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
 }
 
 .card-actions button:hover {
-  color: #d11a2a;
-}
-.kanban-controls {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+    color: #d11a2a;
 }
 
-.kanban-card[data-priority="alta"] {
-  border-left: 6px solid red;
-}
-.kanban-card[data-priority="media"] {
-  border-left: 6px solid orange;
-}
-.kanban-card[data-priority="baixa"] {
-  border-left: 6px solid green;
-}
-
+/* Tarefas */
 .kanban-card[data-expired="true"] {
-  background-color: #ffe5e5;
-  border-color: red;
+    background-color: #ffe5e5;
+    border-color: red;
 }
 
 .kanban-card.concluida {
-  text-decoration: line-through;
-  opacity: 0.6;
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+/* -------------------- Responsivo -------------------- */
+
+@media (max-width: 800px) {
+    .kanban-board {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .kanban-column {
+        width: 90%;
+    }
 }
 
 @media (max-width: 600px) {
@@ -186,17 +213,5 @@ header img {
         margin-bottom: 10px;
         width: 60px;
         height: 60px;
-    }
-
-    h2, h3, h4, a {
-        font-size: 18px;
-    }
-
-    input {
-        width: auto;
-    }
-
-    button {
-        width: auto;
     }
 }
