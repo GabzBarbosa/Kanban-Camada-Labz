@@ -6,55 +6,68 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-      <header>
-        <img src="./imagem/Camada.png" alt="Logo do site" width="100" height="100">
-        <h1>Kanban - Camada Labz</h1>
-    </header>
+  <header>
+    <img src="https://i.imgur.com/GNvIWd2.jpeg" alt="Logo do site" width="100" height="100">
+    <h1>Kanban - Camada Labz</h1>
+  </header>
 
-  <!-- Modal -->
-  <div id="taskModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn">&times;</span>
-      <h2>Nova Tarefa</h2>
-      <input type="text" id="taskTitle" placeholder="Título da Tarefa">
+  <main>
+    <!-- Modal -->
+    <div id="taskModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-content">
+        <button class="close-btn" aria-label="Fechar modal">&times;</button>
+        <h2 id="modalTitle">Nova Tarefa</h2>
 
-      <select id="taskPriority">
-        <option value="baixa">Baixa Prioridade</option>
-        <option value="media">Média Prioridade</option>
-        <option value="alta">Alta Prioridade</option>
-      </select>
-      <select id="taskStatus">
-        <option value="pendente">Pendente</option>
-        <option value="em-andamento">Em Andamento</option>
-        <option value="concluido">Concluído</option>
-        <option value="arquivado">Arquivado</option>
-      </select>
-      <button id="addTaskBtn">Adicionar</button>
-    </div>
-  </div>
+        <label for="taskTitle">Título da Tarefa</label>
+        <input type="text" id="taskTitle" placeholder="Digite o título">
 
-  <!-- Botão para abrir o modal -->
-  <button id="openModalBtn">+ Nova Tarefa</button>
+        <label for="taskPriority">Prioridade</label>
+        <select id="taskPriority">
+          <option value="baixa">Baixa</option>
+          <option value="media">Média</option>
+          <option value="alta">Alta</option>
+        </select>
 
-  <!-- Kanban Board -->
-  <div class="kanban-board">
-    <div class="kanban-column">
-      <h3>Pendente</h3>
-      <div class="kanban-cards" data-status="pendente"></div>
+        <label for="taskStatus">Status Inicial</label>
+        <select id="taskStatus">
+          <option value="pendente">Backlog</option>
+          <option value="em-andamento">To Do</option>
+          <option value="concluido">Finished</option>
+          <option value="arquivado">Archived</option>
+        </select>
+
+        <button id="addTaskBtn">Adicionar Tarefa</button>
+      </div>
     </div>
-    <div class="kanban-column">
-      <h3>Em Andamento</h3>
-      <div class="kanban-cards" data-status="em-andamento"></div>
-    </div>
-    <div class="kanban-column">
-      <h3>Concluído</h3>
-      <div class="kanban-cards" data-status="concluido"></div>
-    </div>
-    <div class="kanban-column">
-      <h3>Arquivado</h3>
-      <div class="kanban-cards" data-status="arquivado"></div>
-    </div>
-  </div>
+
+    <!-- Botão para abrir o modal -->
+    <button id="openModalBtn" class="open-modal-btn">+ Nova Tarefa</button>
+
+    <!-- Kanban Board -->
+    <section class="kanban-board">
+
+      <div class="kanban-column" data-column="pendente">
+        <h3>Pendente</h3>
+        <div class="kanban-cards" data-status="pendente"></div>
+      </div>
+
+      <div class="kanban-column" data-column="em-andamento">
+        <h3>Em Andamento</h3>
+        <div class="kanban-cards" data-status="em-andamento"></div>
+      </div>
+
+      <div class="kanban-column" data-column="concluido">
+        <h3>Concluído</h3>
+        <div class="kanban-cards" data-status="concluido"></div>
+      </div>
+
+      <div class="kanban-column" data-column="arquivado">
+        <h3>Arquivado</h3>
+        <div class="kanban-cards" data-status="arquivado"></div>
+      </div>
+
+    </section>
+  </main>
 
   <script src="script.js"></script>
 </body>
