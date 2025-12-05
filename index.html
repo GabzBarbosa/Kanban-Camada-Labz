@@ -7,13 +7,51 @@
 </head>
 <body>
   <header>
-    <img src="https://i.imgur.com/GNvIWd2.jpeg" alt="Logo do site" width="100" height="100">
+    <img src="https://i.imgur.com/GNvIWd2.jpeg" alt="Logo do site" width="60" height="60">
     <h1>Kanban - Camada Labz</h1>
   </header>
 
   <main>
+    <!-- Controles (filtros, busca, export/import) -->
+    <div class="kanban-controls" role="toolbar" aria-label="Controles do Kanban">
+      <div class="control-group">
+        <label for="filterPriority">Filtrar prioridade</label>
+        <select id="filterPriority">
+          <option value="all">Todas</option>
+          <option value="alta">Alta</option>
+          <option value="media">Média</option>
+          <option value="baixa">Baixa</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="sortBy">Ordenar por</label>
+        <select id="sortBy">
+          <option value="none">Nenhuma</option>
+          <option value="priority">Prioridade (alta → baixa)</option>
+          <option value="dueDateAsc">Vencimento (mais cedo)</option>
+          <option value="dueDateDesc">Vencimento (mais tarde)</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="searchInput">Buscar</label>
+        <input id="searchInput" type="search" placeholder="Buscar título...">
+      </div>
+
+      <div class="control-group">
+        <button id="openModalBtn" class="primary-btn">+ Nova Tarefa</button>
+      </div>
+
+      <div class="control-group">
+        <button id="exportBtn" title="Exportar tarefas para CSV">Exportar CSV</button>
+        <button id="importBtn" title="Importar CSV">Importar CSV</button>
+        <input id="importFile" type="file" accept=".csv" style="display:none">
+      </div>
+    </div>
+
     <!-- Modal -->
-    <div id="taskModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div id="taskModal" class="modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modalTitle">
       <div class="modal-content">
         <button class="close-btn" aria-label="Fechar modal">&times;</button>
         <h2 id="modalTitle">Nova Tarefa</h2>
@@ -30,18 +68,23 @@
 
         <label for="taskStatus">Status Inicial</label>
         <select id="taskStatus">
-          <option value="pendente">Backlog</option>
-          <option value="em-andamento">To Do</option>
-          <option value="concluido">Finished</option>
-          <option value="arquivado">Archived</option>
+          <option value="pendente">Pendente</option>
+          <option value="em-andamento">Em Andamento</option>
+          <option value="concluido">Concluído</option>
+          <option value="arquivado">Arquivado</option>
         </select>
 
-        <button id="addTaskBtn">Adicionar Tarefa</button>
+        <label for="taskDueDate">Data de Vencimento</label>
+        <input type="date" id="taskDueDate">
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="taskDone">
+          <label for="taskDone">Concluída</label>
+        </div>
+
+        <button id="addTaskBtn" class="primary-btn">Salvar</button>
       </div>
     </div>
-
-    <!-- Botão para abrir o modal -->
-    <button id="openModalBtn" class="open-modal-btn">+ Nova Tarefa</button>
 
     <!-- Kanban Board -->
     <section class="kanban-board">
@@ -72,3 +115,8 @@
   <script src="script.js"></script>
 </body>
 </html>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
