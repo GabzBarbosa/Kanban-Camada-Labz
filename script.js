@@ -1,6 +1,5 @@
 (() => {
   const STORAGE_KEY = "kanbanTasks_v2";
-
   // DOM refs
   const modal = document.getElementById("taskModal");
   const openBtn = document.getElementById("openModalBtn");
@@ -9,125 +8,39 @@
   const titleInput = document.getElementById("taskTitle");
   const prioritySelect = document.getElementById("taskPriority");
   const statusSelect = document.getElementById("taskStatus");
+  const dueDateInput = document.getElementById("taskDueDate");
+  const doneCheckbox = document.getElementById("taskDone");
+
+  const filterPriority = document.getElementById("filterPriority");
+  const sortBy = document.getElementById("sortBy");
+  const searchInput = document.getElementById("searchInput");
+  const exportBtn = document.getElementById("exportBtn");
+  const importBtn = document.getElementById("importBtn");
+  const importFile = document.getElementById("importFile");
+
   const board = document.querySelector(".kanban-board");
-  let editingCardId = null; // id da card sendo editada
+  let editingCardId = null;
 
-  // --- Helpers ---
+  // helpers
   const uid = () => "card-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
-
-  const todayStart = () => {
-    const d = new Date();
-    d.setHours(0,0,0,0);
-    return d;
-  };
-
-  const isExpired = (dueDateStr) => {
+  const todayStart = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
+  function isExpired(dueDateStr) {
     if (!dueDateStr) return false;
     const due = new Date(dueDateStr);
     due.setHours(0,0,0,0);
     return due < todayStart();
-  };
-
-  const getColumnByStatus = (status) => document.querySelector(`.kanban-cards[data-status="${status}"]`);
-
-  // Ensure modal has dueDate input and concluida checkbox (adds if missing)
-  function ensureModalExtras() {
-    if (!modal) return;
-    // due date
-    if (!modal.querySelector("#taskDueDate")) {
-      const label = document.createElement("label");
-      label.setAttribute("for", "taskDueDate");
-      label.textContent = "Data de Vencimento";
-
-      const input = document.createElement("input");
-      input.type = "date";
-      input.id = "taskDueDate";
-
-      // insert before add button
-      modal.querySelector(".modal-content").insertBefore(label, addTaskBtn);
-      modal.querySelector(".modal-content").insertBefore(input, addTaskBtn);
-    }
-
-    // concluida checkbox
-    if (!modal.querySelector("#taskDone")) {
-      const wrapper = document.createElement("div");
-      wrapper.style.display = "flex";
-      wrapper.style.alignItems = "center";
-      wrapper.style.justifyContent = "center";
-      wrapper.style.gap = "8px";
-
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.id = "taskDone";
-
-      const label = document.createElement("label");
-      label.setAttribute("for", "taskDone");
-      label.textContent = "Concluída";
-
-      wrapper.appendChild(checkbox);
-      wrapper.appendChild(label);
-
-      modal.querySelector(".modal-content").insertBefore(wrapper, addTaskBtn);
-    }
+  }
+  function getColumnByStatus(status) { return document.querySelector(`.kanban-cards[data-status="${status}"]`); }
+  function formatDueLabel(d) {
+    if (!d) return "";
+    const dt = new Date(d);
+    const day = String(dt.getDate()).padStart(2,'0');
+    const month = String(dt.getMonth()+1).padStart(2,'0');
+    const year = dt.getFullYear();
+    return `Vence: ${day}/${month}/${year}`;
   }
 
-  // Read modal inputs
-  function readModalValues() {
-    const dueInput = modal.querySelector("#taskDueDate");
-    const doneInput = modal.querySelector("#taskDone");
-    return {
-      title: titleInput.value.trim(),
-      priority: prioritySelect ? prioritySelect.value : "baixa",
-      status: statusSelect ? statusSelect.value : "pendente",
-      dueDate: dueInput ? dueInput.value || null : null,
-      done: doneInput ? !!doneInput.checked : false
-    };
-  }
-
-  function fillModalWithTask(task) {
-    titleInput.value = task.title || "";
-    if (prioritySelect) prioritySelect.value = task.priority || "baixa";
-    if (statusSelect) statusSelect.value = task.status || "pendente";
-    const due = modal.querySelector("#taskDueDate");
-    if (due) due.value = task.dueDate || "";
-    const done = modal.querySelector("#taskDone");
-    if (done) done.checked = !!task.concluida;
-  }
-
-  // Modal open/close
-  function openModalForNew() {
-    editingCardId = null;
-    fillModalWithTask({ title: "", priority: "baixa", status: "pendente", dueDate: "", concluida: false });
-    showModal();
-  }
-
-  function openModalForEdit(cardEl) {
-    editingCardId = cardEl.dataset.id;
-    const task = {
-      title: cardEl.querySelector(".card-title").textContent,
-      priority: cardEl.dataset.priority,
-      status: cardEl.closest(".kanban-cards").dataset.status,
-      dueDate: cardEl.dataset.duedate || "",
-      concluida: cardEl.classList.contains("concluida")
-    };
-    fillModalWithTask(task);
-    showModal();
-  }
-
-  function showModal() {
-    if (!modal) return;
-    modal.style.display = "block";
-    modal.setAttribute("aria-hidden", "false");
-    titleInput.focus();
-  }
-
-  function closeModal() {
-    if (!modal) return;
-    modal.style.display = "none";
-    modal.setAttribute("aria-hidden", "true");
-  }
-
-  // --- Storage ---
+  // storage functions
   function saveTasksToLocalStorage() {
     const tasks = [];
     document.querySelectorAll(".kanban-card").forEach(card => {
@@ -149,16 +62,16 @@
     try {
       const tasks = JSON.parse(raw);
       tasks.forEach(task => {
-        const col = getColumnByStatus(task.status) || document.querySelector('.kanban-cards[data-status="pendente"]');
+        const col = getColumnByStatus(task.status) || getColumnByStatus("pendente");
         const card = createCardElement(task);
         col.appendChild(card);
       });
     } catch (err) {
-      console.error("Erro ao parsear tarefas salvas:", err);
+      console.error("Erro ao carregar tarefas:", err);
     }
   }
 
-  // --- Card creation and listeners ---
+  // create card DOM
   function createCardElement({ id = uid(), title, priority = "baixa", status = "pendente", dueDate = null, concluida = false }) {
     const card = document.createElement("div");
     card.className = "kanban-card";
@@ -166,20 +79,16 @@
     card.dataset.priority = priority;
     if (dueDate) card.dataset.duedate = dueDate;
     if (isExpired(dueDate)) card.dataset.expired = "true";
-
     if (concluida) card.classList.add("concluida");
 
-    // content
+    // title
     const titleEl = document.createElement("span");
     titleEl.className = "card-title";
-    titleEl.textContent = title;
+    titleEl.textContent = title || "Sem título";
 
+    // meta
     const metaEl = document.createElement("div");
     metaEl.className = "card-meta";
-    metaEl.style.fontSize = "12px";
-    metaEl.style.marginTop = "8px";
-
-    // due date display
     if (dueDate) {
       const dueSpan = document.createElement("span");
       dueSpan.className = "card-due";
@@ -190,6 +99,16 @@
     // actions
     const actions = document.createElement("div");
     actions.className = "card-actions";
+
+    const toggleDoneBtn = document.createElement("button");
+    toggleDoneBtn.className = "btn-toggle-done";
+    toggleDoneBtn.title = "Marcar/Desmarcar concluída";
+    toggleDoneBtn.textContent = "✔️";
+    toggleDoneBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      card.classList.toggle("concluida");
+      saveTasksToLocalStorage();
+    });
 
     const editBtn = document.createElement("button");
     editBtn.className = "btn-edit";
@@ -206,21 +125,10 @@
     deleteBtn.textContent = "🗑️";
     deleteBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      const ok = confirm("Tem certeza que deseja excluir esta tarefa?");
-      if (ok) {
+      if (confirm("Deseja excluir esta tarefa?")) {
         card.remove();
         saveTasksToLocalStorage();
       }
-    });
-
-    const toggleDoneBtn = document.createElement("button");
-    toggleDoneBtn.className = "btn-toggle-done";
-    toggleDoneBtn.title = "Marcar/Desmarcar concluída";
-    toggleDoneBtn.textContent = "✔️";
-    toggleDoneBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      card.classList.toggle("concluida");
-      saveTasksToLocalStorage();
     });
 
     actions.appendChild(toggleDoneBtn);
@@ -231,60 +139,31 @@
     card.appendChild(metaEl);
     card.appendChild(actions);
 
-    // attach drag listeners
     attachDragListeners(card);
-
-    // double click to edit
     card.addEventListener("dblclick", () => openModalForEdit(card));
-
     return card;
   }
 
-  function formatDueLabel(d) {
-    // d expected YYYY-MM-DD
-    if (!d) return "";
-    const dt = new Date(d);
-    const day = String(dt.getDate()).padStart(2, "0");
-    const month = String(dt.getMonth() + 1).padStart(2, "0");
-    const year = dt.getFullYear();
-    return `Vence: ${day}/${month}/${year}`;
-  }
-
+  // drag & drop
   function attachDragListeners(card) {
     card.setAttribute("draggable", "true");
-
     card.addEventListener("dragstart", (e) => {
       card.classList.add("dragging");
-      // set dataTransfer for cross-window compatibility (not strictly necessary here)
       try { e.dataTransfer.setData("text/plain", card.dataset.id); } catch (err) {}
     });
-
     card.addEventListener("dragend", () => {
       card.classList.remove("dragging");
-      // after drag ends, recompute expiration and persist
       updateCardExpiration(card);
-      saveTasksToLocalStorage();
+      normalizeStatusesAndPersist();
     });
   }
 
-  // update expired attr for a card (based on dataset.duedate)
-  function updateCardExpiration(card) {
-    const dd = card.dataset.duedate || null;
-    if (isExpired(dd)) {
-      card.dataset.expired = "true";
-    } else {
-      delete card.dataset.expired;
-    }
-  }
-
-  // --- Column drag/drop (one-time setup) ---
   function initColumnsDrop() {
     const cols = document.querySelectorAll(".kanban-cards");
     cols.forEach(col => {
       col.addEventListener("dragover", (e) => {
         e.preventDefault();
         col.classList.add("cards-hover");
-        // show insertion point
         const dragging = document.querySelector(".dragging");
         const afterElement = getDragAfterElement(col, e.clientY);
         if (!afterElement) col.appendChild(dragging);
@@ -300,16 +179,13 @@
         col.classList.remove("cards-hover");
         const dragging = document.querySelector(".dragging");
         if (!dragging) return;
-        // append handled in dragover insertion code, but ensure status is updated
         dragging.classList.remove("dragging");
-        // update status in DOM (not only on dataset) - status is stored in column element
-        // persist the new status by moving to this column
-        saveTasksToLocalStorage();
+        // status is derived from column parent when saving
+        normalizeStatusesAndPersist();
       });
     });
   }
 
-  // Helper: find element after which the dragged card should be inserted
   function getDragAfterElement(container, y) {
     const draggableElements = [...container.querySelectorAll(".kanban-card:not(.dragging)")];
     return draggableElements.reduce((closest, child) => {
@@ -323,146 +199,289 @@
     }, { offset: Number.NEGATIVE_INFINITY }).element;
   }
 
-  // After drop, ensure every card's status matches the column it's in
+  function updateCardExpiration(card) {
+    const dd = card.dataset.duedate || null;
+    if (isExpired(dd)) card.dataset.expired = "true";
+    else delete card.dataset.expired;
+  }
+
   function normalizeStatusesAndPersist() {
     document.querySelectorAll(".kanban-cards").forEach(col => {
-      const status = col.dataset.status;
       col.querySelectorAll(".kanban-card").forEach(card => {
-        // when saving, we read the column of the card, so nothing extra needed
-        // but update expiration metadata anyway
         updateCardExpiration(card);
       });
     });
     saveTasksToLocalStorage();
+    applyFiltersAndSort(); // keep UI consistent after move
   }
 
-  // --- Actions on Add/Edit submit ---
+  // modal behavior
+  function openModalForNew() {
+    editingCardId = null;
+    titleInput.value = "";
+    prioritySelect.value = "baixa";
+    statusSelect.value = "pendente";
+    dueDateInput.value = "";
+    doneCheckbox.checked = false;
+    showModal();
+  }
+
+  function openModalForEdit(cardEl) {
+    editingCardId = cardEl.dataset.id;
+    titleInput.value = cardEl.querySelector(".card-title").textContent;
+    prioritySelect.value = cardEl.dataset.priority || "baixa";
+    statusSelect.value = cardEl.closest(".kanban-cards").dataset.status || "pendente";
+    dueDateInput.value = cardEl.dataset.duedate || "";
+    doneCheckbox.checked = cardEl.classList.contains("concluida");
+    showModal();
+  }
+
+  function showModal() {
+    modal.style.display = "block";
+    modal.setAttribute("aria-hidden", "false");
+    titleInput.focus();
+  }
+
+  function closeModal() {
+    modal.style.display = "none";
+    modal.setAttribute("aria-hidden", "true");
+    editingCardId = null;
+  }
+
   function handleModalSubmit() {
-    const vals = readModalValues();
-    if (!vals.title) {
-      alert("Digite um título para a tarefa.");
-      return;
-    }
+    const title = titleInput.value.trim();
+    const priority = prioritySelect.value;
+    const status = statusSelect.value;
+    const dueDate = dueDateInput.value || null;
+    const done = !!doneCheckbox.checked;
+
+    if (!title) { alert("Digite um título para a tarefa."); return; }
 
     if (editingCardId) {
-      // find card and update
       const card = document.querySelector(`.kanban-card[data-id="${editingCardId}"]`);
-      if (!card) {
-        console.warn("Card para editar não encontrado. Criando novo.");
-        createAndAppendTask(vals);
-      } else {
-        card.querySelector(".card-title").textContent = vals.title;
-        card.dataset.priority = vals.priority;
-        if (vals.dueDate) card.dataset.duedate = vals.dueDate;
-        else delete card.dataset.duedate;
+      if (card) {
+        card.querySelector(".card-title").textContent = title;
+        card.dataset.priority = priority;
+        if (dueDate) card.dataset.duedate = dueDate; else delete card.dataset.duedate;
+        if (done) card.classList.add("concluida"); else card.classList.remove("concluida");
 
-        if (vals.done) card.classList.add("concluida"); else card.classList.remove("concluida");
-        // move to target column if status changed
-        const targetCol = getColumnByStatus(vals.status);
-        if (targetCol && card.closest(".kanban-cards") !== targetCol) {
-          targetCol.appendChild(card);
-        }
+        const targetCol = getColumnByStatus(status);
+        if (targetCol && card.closest(".kanban-cards") !== targetCol) targetCol.appendChild(card);
         updateCardExpiration(card);
+      } else {
+        // safety: create new if missing
+        createAndAppendTask({ title, priority, status, dueDate, concluida: done });
       }
     } else {
-      // create new task
-      createAndAppendTask(vals);
+      createAndAppendTask({ id: uid(), title, priority, status, dueDate, concluida: done });
     }
 
     closeModal();
     normalizeStatusesAndPersist();
   }
 
-  function createAndAppendTask(vals) {
-    const taskObj = {
-      id: uid(),
-      title: vals.title,
-      priority: vals.priority,
-      status: vals.status,
-      dueDate: vals.dueDate,
-      concluida: vals.done
-    };
+  function createAndAppendTask(taskObj) {
     const card = createCardElement(taskObj);
-    const col = getColumnByStatus(taskObj.status) || document.querySelector('.kanban-cards[data-status="pendente"]');
+    const col = getColumnByStatus(taskObj.status) || getColumnByStatus("pendente");
     col.appendChild(card);
     saveTasksToLocalStorage();
   }
 
-  // --- Keyboard accessibility for modal ---
-  function initModalKeyboard() {
-    document.addEventListener("keydown", (e) => {
-      if (!modal) return;
-      if (e.key === "Escape") {
-        if (modal.style.display === "block") closeModal();
+  // filters & sorting
+  function applyFiltersAndSort() {
+    const pFilter = filterPriority.value;
+    const q = searchInput.value.trim().toLowerCase();
+    const sort = sortBy.value;
+
+    // For each column, gather cards then optionally sort then re-append filtered ones
+    document.querySelectorAll(".kanban-cards").forEach(col => {
+      let cards = Array.from(col.querySelectorAll(".kanban-card"));
+      // filter
+      cards.forEach(card => {
+        const matchesPriority = (pFilter === "all") || (card.dataset.priority === pFilter);
+        const matchesQuery = !q || card.querySelector(".card-title").textContent.toLowerCase().includes(q);
+        card.style.display = (matchesPriority && matchesQuery) ? "" : "none";
+      });
+
+      // sort if needed - only reorder visible cards
+      if (sort !== "none") {
+        const visibleCards = cards.filter(c => c.style.display !== "none");
+        const hiddenCards = cards.filter(c => c.style.display === "none");
+        if (sort === "priority") {
+          const order = { "alta": 0, "media": 1, "baixa": 2 };
+          visibleCards.sort((a,b) => (order[a.dataset.priority] - order[b.dataset.priority]));
+        } else if (sort === "dueDateAsc" || sort === "dueDateDesc") {
+          visibleCards.sort((a,b) => {
+            const da = a.dataset.duedate || "";
+            const db = b.dataset.duedate || "";
+            if (!da && !db) return 0;
+            if (!da) return 1;
+            if (!db) return -1;
+            return sort === "dueDateAsc" ? (new Date(da) - new Date(db)) : (new Date(db) - new Date(da));
+          });
+        }
+        // re-append visible cards (hidden stay where they are but hidden)
+        visibleCards.forEach(vc => col.appendChild(vc));
+        // hidden cards remain (but keep hidden)
+        hiddenCards.forEach(hc => col.appendChild(hc));
       }
-      if (e.key === "Enter") {
-        // if modal open and focused element is not a button (to avoid accidental submits),
-        // submit form when Enter pressed inside the modal inputs
-        if (modal.style.display === "block") {
-          const active = document.activeElement;
-          const insideModal = modal.contains(active);
-          if (insideModal && (active.tagName === "INPUT" || active.tagName === "SELECT" || active.tagName === "TEXTAREA")) {
-            e.preventDefault();
-            handleModalSubmit();
-          }
+    });
+  }
+
+  // Export CSV
+  function exportToCSV() {
+    const rows = [["id","title","priority","status","dueDate","concluida"]];
+    document.querySelectorAll(".kanban-card").forEach(card => {
+      const id = card.dataset.id;
+      const title = card.querySelector(".card-title").textContent;
+      const priority = card.dataset.priority || "";
+      const status = card.closest(".kanban-cards").dataset.status || "";
+      const dueDate = card.dataset.duedate || "";
+      const concluida = card.classList.contains("concluida") ? "true" : "false";
+      rows.push([id, title, priority, status, dueDate, concluida]);
+    });
+    const csv = rows.map(r => r.map(cell => {
+      if (cell == null) return "";
+      const s = String(cell).replace(/"/g, '""');
+      return `"${s}"`;
+    }).join(",")).join("\n");
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `kanban_export_${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // Import CSV (supports quoted fields)
+  function parseCSV(text) {
+    const lines = [];
+    const regex = /(?:\s*"?([^"\r\n]*)"?\s*,?)/g;
+    // safer parser: handle quoted fields & commas inside quotes
+    // We'll use a robust approach: iterate chars
+    let i = 0, cur = "", row = [], inQuotes = false;
+    while (i < text.length) {
+      const ch = text[i];
+      if (ch === '"' ) {
+        if (inQuotes && text[i+1] === '"') { cur += '"'; i++; } // escaped quote
+        else inQuotes = !inQuotes;
+      } else if (ch === "," && !inQuotes) {
+        row.push(cur); cur = "";
+      } else if ((ch === "\n" || ch === "\r") && !inQuotes) {
+        if (ch === "\r" && text[i+1] === "\n") { i++; } // windows newline
+        row.push(cur); lines.push(row); row = []; cur = "";
+      } else {
+        cur += ch;
+      }
+      i++;
+    }
+    if (cur !== "" || row.length) { row.push(cur); lines.push(row); }
+    // trim spaces around values
+    return lines.map(r => r.map(c => c.trim().replace(/^"|"$/g, "")));
+  }
+
+  function importFromCSVFile(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target.result;
+      const parsed = parseCSV(text);
+      if (!parsed || parsed.length < 2) { alert("CSV vazio ou inválido."); return; }
+      const headers = parsed[0].map(h => h.toLowerCase());
+      const required = ["title"]; // minimal
+      // map rows
+      for (let r = 1; r < parsed.length; r++) {
+        const row = parsed[r];
+        if (row.length === 1 && row[0].trim() === "") continue;
+        const obj = {};
+        headers.forEach((h, idx) => obj[h] = row[idx] || "");
+        // build task
+        const task = {
+          id: obj.id || uid(),
+          title: obj.title || "Sem título",
+          priority: (obj.priority || "baixa"),
+          status: (obj.status || "pendente"),
+          dueDate: obj.duedate || obj["dueDate"] || (obj["due_date"] || "") ,
+          concluida: (String(obj.concluida || obj.done || "").toLowerCase() === "true")
+        };
+        const col = getColumnByStatus(task.status) || getColumnByStatus("pendente");
+        const card = createCardElement(task);
+        col.appendChild(card);
+      }
+      normalizeStatusesAndPersist();
+      alert("Importação finalizada.");
+    };
+    reader.readAsText(file, "UTF-8");
+  }
+
+  // UI initialization
+  function initUI() {
+    openBtn && openBtn.addEventListener("click", openModalForNew);
+    closeBtn && closeBtn.addEventListener("click", closeModal);
+    addTaskBtn && addTaskBtn.addEventListener("click", handleModalSubmit);
+
+    // modal close click outside
+    window.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+    // keyboard: Esc or Enter
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+      if (e.key === "Enter" && modal.style.display === "block") {
+        const active = document.activeElement;
+        if (modal.contains(active) && (active.tagName === "INPUT" || active.tagName === "SELECT" || active.tagName === "TEXTAREA")) {
+          e.preventDefault(); handleModalSubmit();
         }
       }
     });
-  }
 
-  // --- Init UI events (one-time) ---
-  function initUI() {
-    if (!modal) return;
-    ensureModalExtras();
+    // filter & sort events
+    filterPriority && filterPriority.addEventListener("change", applyFiltersAndSort);
+    sortBy && sortBy.addEventListener("change", applyFiltersAndSort);
+    searchInput && searchInput.addEventListener("input", debounce(applyFiltersAndSort, 180));
 
-    openBtn && openBtn.addEventListener("click", () => {
-      openModalForNew();
+    // export/import
+    exportBtn && exportBtn.addEventListener("click", exportToCSV);
+    importBtn && importBtn.addEventListener("click", () => importFile.click());
+    importFile && importFile.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) importFromCSVFile(file);
+      importFile.value = "";
     });
 
-    closeBtn && closeBtn.addEventListener("click", closeModal);
-
-    // clicking outside modal content closes
-    window.addEventListener("click", (e) => {
-      if (!modal) return;
-      if (e.target === modal) closeModal();
-    });
-
-    addTaskBtn && addTaskBtn.addEventListener("click", handleModalSubmit);
-
-    // ensure columns accept drops and manage insertion
     initColumnsDrop();
-
-    // accessibility shortcuts
-    initModalKeyboard();
-
-    // when modal opened for edit, make sure editingCardId is set by callers
   }
 
-  // --- On load ---
-  window.addEventListener("DOMContentLoaded", () => {
-    // Ensure referenced inputs exist
-    if (!titleInput || !prioritySelect || !statusSelect || !modal) {
-      console.error("Elementos essenciais do modal não encontrados. Verifique se HTML contém #taskModal, #taskTitle, #taskPriority e #taskStatus.");
-      return;
-    }
+  // small debounce
+  function debounce(fn, wait=150) {
+    let t;
+    return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), wait); };
+  }
 
-    initUI();
-    loadTasksFromLocalStorage();
-
-    // After loading, attach expirations and ensure drag listeners (cards were created via createCardElement so they already have listeners)
-    document.querySelectorAll(".kanban-card").forEach(card => updateCardExpiration(card));
-
-    // As safety, observe mutations on the board to persist changes whenever nodes move or are added
-    const mo = new MutationObserver((mutations) => {
-      // debounce quick changes
-      normalizeStatusesAndPersist();
+  // observe board changes to persist automatically
+  function startMutationObserver() {
+    const mo = new MutationObserver(() => {
+      // small debounce: wait 60ms to persist
+      debounce(() => normalizeStatusesAndPersist(), 60)();
     });
     mo.observe(board, { childList: true, subtree: true });
+  }
 
-    // final normalization (in case load placed some in wrong columns)
-    normalizeStatusesAndPersist();
+  // initial load
+  window.addEventListener("DOMContentLoaded", () => {
+    // validate essentials
+    if (!titleInput || !prioritySelect || !statusSelect || !modal) {
+      console.error("Elementos essenciais do modal não encontrados.");
+      return;
+    }
+    initUI();
+    loadTasksFromLocalStorage();
+    // update expirations for loaded
+    document.querySelectorAll(".kanban-card").forEach(card => updateCardExpiration(card));
+    applyFiltersAndSort();
+    startMutationObserver();
   });
 
 })();
-
-
