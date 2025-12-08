@@ -1,0 +1,45 @@
+ <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+        <title>Dashboard & Calendário | Kanban Labz</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<header>
+  <img src="https://i.imgur.com/GNvIWd2.jpeg" alt="Logo do site" width="60" height="60">
+    <h1>Dashboard & Calendário</h1>
+    <a href="index.html" class="back-btn">← Voltar ao Kanban</a>
+</header>
+
+<main>
+    <section class="charts-section">
+        <h2>📊 Dashboard de Status</h2>
+
+        <div class="charts-container">
+            <canvas id="statusChart"></canvas>
+            <canvas id="priorityChart"></canvas>
+            <canvas id="dueChart"></canvas>
+        </div>
+    </section>
+  <section class="calendar-section">
+        <h2>📅 Calendário</h2>
+
+        <div class="calendar-controls">
+            <button id="prevMonth">◀</button>
+            <h3 id="calendarTitle"></h3>
+            <button id="nextMonth">▶</button>
+        </div>
+
+        <div id="calendarGrid" class="calendar-grid"></div>
+    </section>
+
+</main>
+
+<script src="dashboard.js"></script>
+
+</body>
+</html>
