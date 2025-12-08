@@ -30,6 +30,15 @@ header img {
   border-radius: 50%;
 }
 
+.back-btn {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    background: #6b4bab;
+    padding: 6px 12px;
+    border-radius: 8px;
+}
+
 /* Controls */
 .kanban-controls {
   display: flex;
@@ -265,3 +274,4 @@ header img {
     gap: 8px;
   }
 }
+
