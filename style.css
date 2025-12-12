@@ -1,48 +1,70 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;1,700&display=swap");
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Montserrat", sans-serif;
+/* =========================
+   Variáveis principais
+========================= */
+:root {
+  --purple-dark: #311354;
+  --purple-light: #6b4bab;
+  --bg-light: #f3eef8;
+  --bg-card: #f7f7f8;
+  --bg-column: #f8f7fa;
+  --border: #ccc;
+  --shadow: rgba(0, 0, 0, 0.06);
+  --shadow-hover: rgba(0, 0, 0, 0.09);
 }
 
+/* =========================
+   Base
+========================= */
 body {
-  background-color: rgb(240, 235, 243);
-  padding: 20px;
-  color: #222;
+  font-family: "Montserrat", sans-serif;
+  background-color: var(--bg-light);
+  margin: 0.1%;
+  padding: 0.2% 0.9%;
 }
 
-/* Header */
+/* =========================
+   Header
+========================= */
 header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--purple-dark);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+}
+
+.header-left {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #311354;
-  color: #fff;
-  padding: 12px 16px;
-  border-radius: 12px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-  justify-content: center;
-}
-
-header img {
-  border-radius: 50%;
 }
 
 .back-btn {
-    color: white;
-    text-decoration: none;
-    font-size: 14px;
-    background: #6b4bab;
-    padding: 6px 12px;
-    border-radius: 8px;
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  background: var(--purple-light);
+  padding: 6px 14px;
+  border-radius: 8px;
+  transition: opacity 0.12s ease;
 }
 
-/* Controls */
+.back-btn:hover {
+  opacity: 0.85;
+}
+
+h1, h2 {
+  margin: 0 0 15px;
+}
+
+/* =========================
+   Controls
+========================= */
 .kanban-controls {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   align-items: center;
   justify-content: space-between;
   margin-top: 18px;
@@ -60,10 +82,11 @@ header img {
 .control-group select {
   padding: 8px 10px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border);
   min-width: 140px;
-  transition: box-shadow 0.12s ease, transform 0.12s ease;
+  transition: 0.12s ease;
 }
+
 .control-group input[type="search"]:focus,
 .control-group select:focus {
   box-shadow: 0 4px 12px rgba(49, 19, 84, 0.08);
@@ -72,18 +95,19 @@ header img {
 
 /* Buttons */
 .primary-btn {
-  background: #311354;
+  background: var(--purple-dark);
   color: #fff;
   padding: 8px 12px;
   border-radius: 8px;
   border: none;
   cursor: pointer;
-  box-shadow: 0 3px 8px rgba(49, 19, 84, 0.15);
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  box-shadow: 0 3px 8px var(--shadow);
+  transition: 0.12s ease;
 }
+
 .primary-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 18px rgba(49, 19, 84, 0.18);
+  box-shadow: 0 8px 18px var(--shadow-hover);
 }
 
 .control-group button {
@@ -92,30 +116,37 @@ header img {
   border: 1px solid #bdbdbd;
   background: #fff;
   cursor: pointer;
+  transition: 0.12s;
 }
 
-/* Kanban Board */
+.control-group button:hover {
+  background: #f3f3f3;
+}
+
+/* =========================
+   Kanban Columns
+========================= */
 .kanban-board {
   display: flex;
   gap: 20px;
-  margin-top: 20px;
+  margin-top: 22px;
   justify-content: center;
   align-items: flex-start;
-  transition: all 0.18s ease;
 }
 
 .kanban-column {
   flex: 1;
-  min-width: 240px;
-  background: #f8f7fa;
+  min-width: 250px;
+  background: var(--bg-column);
   border-radius: 12px;
-  padding: 12px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  padding: 14px;
+  box-shadow: 0 6px 16px var(--shadow);
+  transition: 0.12s ease;
 }
+
 .kanban-column:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 26px rgba(0,0,0,0.08);
 }
 
 .kanban-column h3 {
@@ -125,32 +156,33 @@ header img {
   color: #2b2b2b;
 }
 
-/* Cards container */
 .kanban-cards {
   min-height: 200px;
   padding: 10px;
   background: #fff;
   border-radius: 10px;
-  transition: background 0.12s ease;
 }
 
-/* Card */
+/* =========================
+   Kanban Card
+========================= */
 .kanban-card {
-  background: #f7f7f8;
+  background: var(--bg-card);
   margin: 10px 0;
   padding: 12px;
   border-radius: 10px;
   cursor: grab;
-  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.06);
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  box-shadow: 0 5px 12px var(--shadow);
+  transition: 0.12s ease;
   position: relative;
 }
+
 .kanban-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.09);
+  box-shadow: 0 12px 22px var(--shadow-hover);
 }
 
-/* Priorities (indicator) */
+/* Priority Indicators */
 .kanban-card[data-priority="alta"] {
   border-left: 6px solid #d93737;
 }
@@ -161,6 +193,29 @@ header img {
   border-left: 6px solid #2e8b57;
 }
 
+/* Tags */
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.tag {
+  background: #e2e8f0;
+  color: #334155;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Automatic tag colors */
+.tag:nth-child(4n+1) { background: #fee2e2; color:#991b1b; }
+.tag:nth-child(4n+2) { background: #dbeafe; color:#1e3a8a; }
+.tag:nth-child(4n+3) { background: #dcfce7; color:#166534; }
+.tag:nth-child(4n+4) { background: #fae8ff; color:#86198f; }
+
 /* Dragging */
 .dragging {
   opacity: 0.6;
@@ -170,11 +225,10 @@ header img {
   background: #fff7f0;
 }
 
-/* placeholder (when reordering) */
+/* Placeholder */
 .kanban-card.placeholder {
   border: 2px dashed #cfcfcf;
-  background: linear-gradient(
-    90deg,
+  background: linear-gradient(90deg,
     rgba(255, 255, 255, 0.6),
     rgba(245, 245, 245, 0.6)
   );
@@ -183,12 +237,13 @@ header img {
   box-shadow: none;
 }
 
-/* Card meta and actions */
+/* Meta e Ações */
 .card-meta {
   font-size: 12px;
   margin-top: 8px;
   color: #555;
 }
+
 .card-actions {
   position: absolute;
   top: 8px;
@@ -196,17 +251,20 @@ header img {
   display: flex;
   gap: 6px;
 }
+
 .card-actions button {
   background: none;
   border: none;
   cursor: pointer;
   font-size: 14px;
-}
-.card-actions button:hover {
-  transform: scale(1.05);
+  transition: 0.12s;
 }
 
-/* Expired / done */
+.card-actions button:hover {
+  transform: scale(1.1);
+}
+
+/* Estado */
 .kanban-card[data-expired="true"] {
   background: #fff0f0;
 }
@@ -215,7 +273,9 @@ header img {
   opacity: 0.6;
 }
 
-/* Modal */
+/* =========================
+   Modal
+========================= */
 .modal {
   display: none;
   position: fixed;
@@ -223,37 +283,36 @@ header img {
   left: 50%;
   transform: translateX(-50%);
   width: 360px;
-  background: #fff;
+  background: white;
   border-radius: 12px;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
   padding: 18px;
   z-index: 1200;
 }
+
 .modal-content {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
+
 .modal input,
-.modal select,
-.modal button {
+.modal select {
   font-size: 14px;
-}
-.modal input[type="date"] {
-  padding: 9px;
+  padding: 8px 10px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border);
 }
+
 .close-btn {
   background: none;
   border: none;
   font-size: 22px;
-  text-align: right;
   margin-left: auto;
   cursor: pointer;
 }
 
-/* checkbox row */
+/* Checkbox Row */
 .checkbox-row {
   display: flex;
   align-items: center;
@@ -261,17 +320,20 @@ header img {
   justify-content: center;
 }
 
-/* responsive */
+/* =========================
+   Responsive
+========================= */
 @media (max-width: 900px) {
   .kanban-board {
     flex-direction: column;
     align-items: center;
   }
+
   .kanban-column {
     width: 92%;
   }
+
   .kanban-controls {
-    gap: 8px;
+    gap: 10px;
   }
 }
-

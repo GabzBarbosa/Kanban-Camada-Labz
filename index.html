@@ -3,20 +3,26 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Kanban</title>
+  <title>Kanban - Camada Labz</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+
+  <!-- HEADER -->
   <header>
-    <img src="https://i.imgur.com/GNvIWd2.jpeg" alt="Logo do site" width="60" height="60">
-    <h1>Kanban - Camada Labz</h1>
+    <div class="header-left">
+      <img src="https://i.imgur.com/GNvIWd2.jpeg" alt="Logo do site" width="60" height="60">
+      <h1>Kanban - Camada Labz</h1>
+    </div>
     <a href="dashboard.html" class="back-btn">Dashboard</a>
   </header>
 
   <main>
-    <!-- Controles (filtros, busca, export/import) -->
+
+    <!-- CONTROLES -->
     <div class="kanban-controls" role="toolbar" aria-label="Controles do Kanban">
+
       <div class="control-group">
         <label for="filterPriority">Filtrar prioridade</label>
         <select id="filterPriority">
@@ -43,19 +49,22 @@
       </div>
 
       <div class="control-group">
-        <button id="openModalBtn" class="primary-btn">+ Nova Tarefa</button>
+        <button id="openModalBtn" class="primary-btn">Nova Tarefa</button>
       </div>
 
       <div class="control-group">
         <button id="exportBtn" title="Exportar tarefas para CSV">Exportar CSV</button>
+
         <button id="importBtn" title="Importar CSV">Importar CSV</button>
         <input id="importFile" type="file" accept=".csv" style="display:none">
       </div>
+
     </div>
 
-    <!-- Modal -->
-    <div id="taskModal" class="modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modalTitle">
+    <!-- MODAL -->
+    <div id="taskModal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
       <div class="modal-content">
+
         <button class="close-btn" aria-label="Fechar modal">&times;</button>
         <h2 id="modalTitle">Nova Tarefa</h2>
 
@@ -84,14 +93,16 @@
           <input type="checkbox" id="taskDone">
           <label for="taskDone">Concluída</label>
         </div>
-          <label>Tags (separadas por vírgula):</label>
-<input type="text" id="taskTags" placeholder="ex: urgente, cliente, ux">
+
+        <label for="taskTagsInput">Tags (separadas por vírgula):</label>
+        <input type="text" id="taskTagsInput" placeholder="ex: urgente, cliente, ux">
 
         <button id="addTaskBtn" class="primary-btn">Salvar</button>
+
       </div>
     </div>
 
-    <!-- Kanban Board -->
+    <!-- KANBAN BOARD -->
     <section class="kanban-board">
 
       <div class="kanban-column" data-column="pendente">
@@ -115,6 +126,7 @@
       </div>
 
     </section>
+
   </main>
 
   <script src="script.js"></script>
